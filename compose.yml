@@ -1,0 +1,26 @@
+services:
+  webauthn-app:
+    build: .
+    container_name: webauthn-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/webauthn-app
+    stdin_open: true
+    tty: true
+
+  webauthn-db:
+    image: mysql:8.0
+    container_name: webauthn-db
+    platform: linux/x86_64
+    environment:
+      - MYSQL_DATABASE=webauthn
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+      - MYSQL_ROOT_PASSWORD=docker
+    volumes:
+      - db-store:/var/lib/mysql
+    ports:
+      - 3306:3306
+volumes:
+  db-store:

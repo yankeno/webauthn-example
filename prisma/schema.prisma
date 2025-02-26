@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  name           String?
+  password       String
+  challenge      String?
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+  authenticators Authenticator[]
+
+  @@map("users")
+}
+
+model Authenticator {
+  id         String @id
+  user_id    Int
+  public_key String
+  counter    Int
+  transports String
+  User       User   @relation(fields: [user_id], references: [id])
+
+  @@index([user_id], map: "authenticators_user_id_fkey")
+  @@map("authenticators")
+}
