@@ -54,7 +54,7 @@ export default async function handler(
       return res.status(400).json({ error: "Authentication failed" });
     }
 
-    prisma.user.update({
+    await prisma.user.update({
       where: { email: "testuser@example.com" },
       data: {
         challenge: null,

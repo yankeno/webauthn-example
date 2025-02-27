@@ -12,7 +12,7 @@ model User {
   email          String          @unique
   name           String?
   password       String
-  challenge      String?
+  challenge      String? // セッションで管理するのは面倒なのでDB保存
   created_at     DateTime        @default(now())
   updated_at     DateTime        @updatedAt
   authenticators Authenticator[]

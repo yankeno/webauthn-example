@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { generateRegistrationOptions } from "@simplewebauthn/server";
+import {
+  AuthenticatorTransportFuture,
+  generateRegistrationOptions,
+} from "@simplewebauthn/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -14,6 +17,7 @@ export default async function handler(
 ) {
   const user = await prisma.user.findUnique({
     where: { email: "testuser@example.com" }, // 認証済みユーザーのメールアドレス
+    include: { authenticators: true },
   });
 
   if (!(user && user.name)) {
@@ -23,9 +27,17 @@ export default async function handler(
   const registrationOptions = await generateRegistrationOptions({
     rpName,
     rpID,
-    userID: encoder.encode(user.name), // TODO 学習
+    userID: encoder.encode(user.name),
     userName: user.email,
     attestationType: "none",
+    // 認証機の重複登録防止
+    excludeCredentials: user.authenticators.map((authenticator) => ({
+      id: authenticator.id,
+      type: "public-key",
+      transports: authenticator.transports.split(
+        ",",
+      ) as AuthenticatorTransportFuture[],
+    })),
     authenticatorSelection: {
       residentKey: "required",
       authenticatorAttachment: "platform",
