@@ -46,16 +46,6 @@ WebAuthnを使ったパスキーのサンプル実装。
 
 ![passkey](https://github.com/user-attachments/assets/edbacfbc-02b4-42c8-b006-d20f807a714b)
 
-## Prisma
-
-```bash
-# 初回マイグレーション実行
-prisma migrate dev --name init
-
-# 型定義更新(migrateを実行した場合は不要)
-npx prisma generate
-```
-
 ## 参考
 
 - SoftwareDesign 2025年1月号
